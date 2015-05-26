@@ -1,0 +1,37 @@
+{% extends 'login/../../../login/templates/template.html' %}
+
+{% block main %}
+
+<script type="text/javascript">
+    $(document).ready(function(){
+        $("#quote-form").submit(function(){
+            var symbol = $("#symbol").val();
+            $.post(
+                '/stocks/quote',
+                {symbol: symbol},
+                function(data){
+                    $("#quote-display").css("display", "");
+                    $("#name-display").html(data.name + " (" + data.symbol + ")");
+                    $("#price-display").html("$" + data.price);
+                }
+            );
+
+            return false;
+        });
+    });
+</script>
+
+<p id="quote-display" style="display:none;">The current price of <b id="name-display"></b> is <b id="price-display"></b>.</p>
+
+<form method="post" action="/stocks/quote" id="quote-form">
+    {% csrf_token %}
+    <fieldset>
+        <div class="form-group">
+            <input autofocus="true" class="form-control" id="symbol" name="symbol" placeholder="Symbol" type="text"/>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-default">Get Quote</button>
+        </div>
+    </fieldset>
+</form>
+{% endblock %}
