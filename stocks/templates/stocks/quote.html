@@ -1,4 +1,4 @@
-{% extends 'login/../../../login/templates/template.html' %}
+{% extends 'template.html' %}
 
 {% block main %}
 
@@ -23,8 +23,7 @@
 
 <p id="quote-display" style="display:none;">The current price of <b id="name-display"></b> is <b id="price-display"></b>.</p>
 
-<form method="post" action="/stocks/quote" id="quote-form">
-    {% csrf_token %}
+<form id="quote-form">
     <fieldset>
         <div class="form-group">
             <input autofocus="true" class="form-control" id="symbol" name="symbol" placeholder="Symbol" type="text"/>
