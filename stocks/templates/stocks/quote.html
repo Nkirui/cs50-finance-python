@@ -8,13 +8,18 @@
             var symbol = $("#symbol").val();
             $.post(
                 '/stocks/quote',
-                {symbol: symbol},
-                function(data){
-                    $("#quote-display").css("display", "");
-                    $("#name-display").html(data.name + " (" + data.symbol + ")");
-                    $("#price-display").html("$" + data.price);
-                }
-            );
+                {symbol: symbol}
+            ).done(function(data){
+
+                if (data.error)
+                    displayError(data.error)
+
+                $("#quote-display").css("display", "");
+                $("#name-display").html(data.name + " (" + data.symbol + ")");
+                $("#price-display").html("$" + data.price);
+            }).error(function(error){
+                displayError('Server Error: Unable to retrieve quote.', error)
+            });
 
             return false;
         });

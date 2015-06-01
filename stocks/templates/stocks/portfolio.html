@@ -1,5 +1,28 @@
 {% extends 'template.html' %}
 
 {% block main %}
-    <p>TODO - Portfolio</p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Stock</th>
+                <th>Shares owned</th>
+                <th>Current Price</th>
+                <th>Current Value</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for holding in portfolio %}
+            <tr>
+                <td>{{ holding.name }}</td>
+                <td>{{ holding.shares }}</td>
+                <td>{{ holding.price }}</td>
+                <td>{{ holding.value }}</td>
+            </tr>
+        {% endfor %}
+        <tr>
+            <th colspan="3">TOTAL</th>
+            <th>{{ total_value }}</th>
+        </tr>
+        </tbody>
+    </table>
 {% endblock %}

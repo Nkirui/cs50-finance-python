@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from stocks.models import FinanceUser
 
 @login_required
 def index(request):
@@ -20,7 +21,7 @@ def login_user(request):
         # Valid username and password
         if user is not None and user.is_active:
             login(request, user)
-            redirect('portfolio')
+            return redirect('portfolio')
         # Incorrect username or password
         elif user is None:
             return render(request, "error.html", {'message': 'Invalid username and/or password'})
@@ -41,9 +42,13 @@ def register_user(request):
         confirm = request.POST.get('confirm', '')
 
         # Make sure a user with this username doesn't already exist
-        user = User.objects.get(username=username)
-        if user is not None:
-            return render(request, "error.html", {'message': 'A user with that username already exists in the system. Please choose another username'})
+        try:
+            User.objects.get(username=username)
+            return render(request, "error.html", {
+                'message': 'A user with that username already exists in the system. Please choose another username'
+            })
+        except User.DoesNotExist:
+            pass
 
         # Validate input
         if not username or not password or not confirm:
@@ -53,6 +58,10 @@ def register_user(request):
 
         # Create new user
         user = User.objects.create_user(username, password=password)
+        FinanceUser.objects.create(user=user, cash=10000)
+
+        # Login new user
+        user = authenticate(username=username, password=password)
         login(request, user)
 
         # Send the newly logged in user to the quote page
